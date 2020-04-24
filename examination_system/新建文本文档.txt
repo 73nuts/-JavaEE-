@@ -1,0 +1,22 @@
+super.doPost(request, response);
+		String email = request.getParameter("email");
+		Teacher tea = null;
+		Student stu = null;
+		PrintWriter out = response.getWriter();
+		// 实例化一个发送邮件的对象
+		SendMail mySendMail = new SendMail();
+		// 根据邮箱找到该用户信息
+		tea = TeacherService.getAdminByEmail(email);
+		if (tea != null) {
+			// 设置收件人和消息内容
+			mySendMail.sendMail(email, "教务管理系统提醒，您的密码为：" + tea.getPassword());
+			out.println("<script>alert('恭喜，找回密码成功');window.location.href='login.jsp'</script>");
+		} else {
+			stu = StudentService.getUserByEmail(email);
+			if (stu != null) {
+				mySendMail.sendMail(email, "教务管理系统提醒，您的密码为：" + stu.getPassword());
+				out.println("<script>alert('恭喜，找回密码成功');window.location.href='login.jsp'</script>");
+			}
+		}
+		out.println("<script>alert('该邮箱尚未注册！请重新输入');window.location.href='retrievePassword.jsp'</script>");
+	}
